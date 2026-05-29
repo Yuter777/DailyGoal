@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kunlik Tartib</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d1117;
+  --bg2:#161b22;
+  --card:#1c2330;
+  --line:#2a3343;
+  --gold:#e0a458;
+  --green:#3fb950;
+  --green-dim:#1f3d28;
+  --text:#e6edf3;
+  --muted:#8b98a8;
+  --accent:#5b8def;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:'Manrope',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  background-image:radial-gradient(circle at 20% 0%,rgba(91,141,239,.08),transparent 45%),radial-gradient(circle at 85% 100%,rgba(224,164,88,.07),transparent 45%);
+}
+.wrap{max-width:560px;margin:0 auto;padding:20px 16px 60px}
+
+header{text-align:center;padding:18px 0 24px}
+.greeting{font-family:'Manrope';color:var(--muted);font-size:14px;letter-spacing:.5px}
+h1{font-family:'Sora';font-weight:800;font-size:30px;margin:4px 0;background:linear-gradient(120deg,var(--gold),#f0d090);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.date{color:var(--muted);font-size:13px}
+
+/* progress ring */
+.ring-box{display:flex;justify-content:center;margin:22px 0 8px}
+.ring-wrap{position:relative;width:160px;height:160px}
+svg.ring{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--line);stroke-width:12}
+.ring-fg{fill:none;stroke:url(#grad);stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1)}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-pct{font-family:'Sora';font-weight:800;font-size:38px;line-height:1}
+.ring-label{color:var(--muted);font-size:12px;margin-top:4px;letter-spacing:.5px}
+
+.streak{display:flex;justify-content:center;gap:8px;margin-top:6px}
+.streak-pill{background:var(--bg2);border:1px solid var(--line);border-radius:30px;padding:6px 14px;font-size:13px;color:var(--gold);font-weight:600;display:flex;align-items:center;gap:6px}
+
+/* tabs */
+.tabs{display:flex;gap:6px;background:var(--bg2);padding:5px;border-radius:14px;margin:22px 0 16px;border:1px solid var(--line)}
+.tab{flex:1;text-align:center;padding:9px 0;border-radius:10px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:.2s}
+.tab.active{background:var(--card);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+
+.section{display:none}
+.section.active{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.cat-title{font-family:'Sora';font-weight:700;font-size:15px;margin:18px 0 10px;display:flex;align-items:center;gap:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-size:12px}
+
+.item{
+  display:flex;align-items:center;gap:14px;
+  background:var(--card);border:1px solid var(--line);
+  border-radius:14px;padding:14px 16px;margin-bottom:9px;
+  cursor:pointer;transition:.2s;position:relative;overflow:hidden
+}
+.item:active{transform:scale(.985)}
+.item.done{background:var(--green-dim);border-color:var(--green)}
+.item.done .item-text{color:var(--muted);text-decoration:line-through}
+.check{
+  width:26px;height:26px;border-radius:8px;border:2px solid var(--line);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s
+}
+.item.done .check{background:var(--green);border-color:var(--green)}
+.check svg{width:14px;height:14px;stroke:#fff;stroke-width:3.5;fill:none;opacity:0;transition:.2s}
+.item.done .check svg{opacity:1}
+.item-body{flex:1}
+.item-text{font-weight:600;font-size:15px}
+.item-time{font-size:12px;color:var(--gold);font-weight:600;margin-top:2px}
+.item-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.item-tag{font-size:11px;background:var(--bg);border:1px solid var(--line);padding:3px 9px;border-radius:20px;color:var(--muted);flex-shrink:0}
+
+.info-card{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.info-card h3{font-family:'Sora';font-size:14px;margin-bottom:8px;color:var(--gold)}
+.info-card p,.info-card li{font-size:13.5px;color:var(--muted);line-height:1.7}
+.info-card ul{padding-left:18px;margin-top:4px}
+.info-card strong{color:var(--text)}
+
+.week-banner{background:linear-gradient(120deg,rgba(224,164,88,.12),rgba(91,141,239,.1));border:1px solid var(--gold);border-radius:14px;padding:16px;margin-bottom:18px}
+.week-banner h3{font-family:'Sora';font-size:14px;color:var(--gold);margin-bottom:6px}
+.week-banner p{font-size:13px;color:var(--text);line-height:1.6}
+
+.reset{margin-top:30px;text-align:center}
+.reset button{background:transparent;border:1px solid var(--line);color:var(--muted);padding:10px 22px;border-radius:30px;font-size:13px;cursor:pointer;font-family:'Manrope';font-weight:600}
+.reset button:active{background:var(--bg2)}
+
+.motivation{text-align:center;font-family:'Sora';font-size:14px;color:var(--gold);margin:24px 0 6px;font-weight:600;padding:0 20px;line-height:1.5}
+.day-toggle{display:flex;gap:6px;justify-content:center;margin:14px 0 6px;flex-wrap:wrap}
+.day-btn{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--bg2);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+.day-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.workout-day{display:none}
+.workout-day.active{display:block;animation:fade .3s ease}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="greeting" id="greeting">Assalomu alaykum</div>
+    <h1>Kunlik Tartib</h1>
+    <div class="date" id="date"></div>
+  </header>
+
+  <div class="ring-box">
+    <div class="ring-wrap">
+      <svg class="ring" width="160" height="160">
+        <defs>
+          <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#e0a458"/>
+            <stop offset="100%" stop-color="#3fb950"/>
+          </linearGradient>
+        </defs>
+        <circle class="ring-bg" cx="80" cy="80" r="68"/>
+        <circle class="ring-fg" id="ringFg" cx="80" cy="80" r="68"/>
+      </svg>
+      <div class="ring-center">
+        <div class="ring-pct" id="ringPct">0%</div>
+        <div class="ring-label" id="ringLabel">0 / 0 bajarildi</div>
+      </div>
+    </div>
+  </div>
+  <div class="streak">
+    <div class="streak-pill" id="streakPill">🔥 <span id="streakNum">0</span> kun ketma-ket</div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="today">Bugun</div>
+    <div class="tab" data-tab="sport">Sport</div>
+    <div class="tab" data-tab="guide">Yo'riqnoma</div>
+  </div>
+
+  <!-- TODAY -->
+  <div class="section active" id="today">
+    <div class="week-banner">
+      <h3>⭐ Birinchi hafta — eng muhim 3 ta</h3>
+      <p>Hammasini birdan emas! Avval shu 3 taga e'tibor bering: <strong>5 vaqt namoz, telefon limiti, sport</strong>. Keyingi haftadan qolganlarini qo'shing.</p>
+    </div>
+    <div id="todayList"></div>
+    <div class="motivation" id="motivation"></div>
+    <div class="reset"><button onclick="resetDay()">↺ Bugunni tozalash</button></div>
+  </div>
+
+  <!-- SPORT -->
+  <div class="section" id="sport">
+    <div class="day-toggle">
+      <button class="day-btn" data-w="0">Du</button>
+      <button class="day-btn" data-w="1">Se</button>
+      <button class="day-btn" data-w="2">Ch</button>
+      <button class="day-btn" data-w="3">Pa</button>
+      <button class="day-btn" data-w="4">Ju</button>
+      <button class="day-btn" data-w="5">Sh</button>
+      <button class="day-btn" data-w="6">Ya</button>
+    </div>
+    <div id="workoutContainer"></div>
+  </div>
+
+  <!-- GUIDE -->
+  <div class="section" id="guide">
+    <div class="info-card">
+      <h3>🍽️ Kam yeyish qoidalari</h3>
+      <ul>
+        <li><strong>Nonushta:</strong> Tuxum + non + choy (shirinsiz)</li>
+        <li><strong>Tushlik:</strong> Yarim porsiya kam</li>
+        <li><strong>Kechki:</strong> 19:00 gacha, keyin hech narsa</li>
+        <li><strong>Suv:</strong> kuniga 8 stakan</li>
+        <li>Shirin, chips, gazli ichimlik — <strong>yo'q</strong></li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>📖 Qur'on o'rganish (Noorani Qaida)</h3>
+      <ul>
+        <li>Har kuni ertalab 15 daqiqa</li>
+        <li>YouTube'da o'zbek tilida darslar bor</li>
+        <li>Haftada 1 sahifa — shoshilmang</li>
+        <li>3 oyda arab harflarini to'liq o'qiysiz</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>📵 Telefon nazorati</h3>
+      <ul>
+        <li>Instagram: kuniga <strong>20 daqiqa</strong> limit</li>
+        <li>YouTube: kuniga <strong>20 daqiqa</strong> limit</li>
+        <li>Telefonda "Screen Time" sozlamasidan limit qo'ying</li>
+        <li>O'yin: faqat 20:00–21:00</li>
+        <li>Namoz vaqtida telefon — chetda</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>💼 Ishga kirish (har kuni 1 soat)</h3>
+      <ul>
+        <li>Resume yozing / yangilang</li>
+        <li>Har kuni 2 ta vakansiyaga ariza</li>
+        <li>1 ta ko'nikma o'rganing (kurs, YouTube)</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>😴 Erta uxlash</h3>
+      <ul>
+        <li>22:00 da telefon yopiladi</li>
+        <li>Har kuni bir xil vaqtda yoting/turing</li>
+        <li>7–8 soat uyqu</li>
+        <li>Yotishdan oldin ekran yo'q</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+const TASKS=[
+  {cat:"🕌 Namoz",items:[
+    {id:"bomdod",t:"Bomdod namozi",time:"05:00"},
+    {id:"peshin",t:"Peshin namozi",time:"12:00"},
+    {id:"asr",t:"Asr namozi",time:"15:30"},
+    {id:"shom",t:"Shom namozi",time:"18:00"},
+    {id:"xufton",t:"Xufton namozi",time:"19:30"},
+  ]},
+  {cat:"📖 Ma'naviyat",items:[
+    {id:"quron",t:"Qur'on / Noorani Qaida",sub:"15 daqiqa arab harflari",time:"05:15",tag:"15 daq"},
+  ]},
+  {cat:"💪 Tana",items:[
+    {id:"sport",t:"Jismoniy mashq",sub:"Sport bo'limiga qarang",time:"05:30",tag:"30 daq"},
+    {id:"ovqat",t:"To'g'ri ovqatlanish",sub:"Kam, 19:00 gacha",tag:"diet"},
+    {id:"suv",t:"8 stakan suv",tag:"💧"},
+  ]},
+  {cat:"🎯 Rivojlanish",items:[
+    {id:"ish",t:"Ishga kirish faoliyati",sub:"Resume / vakansiya / ko'nikma",time:"06:30",tag:"1 soat"},
+    {id:"kitob",t:"Kitob o'qish",sub:"Foydali kontent",time:"21:00",tag:"20 daq"},
+  ]},
+  {cat:"📵 Nazorat",items:[
+    {id:"telefon",t:"Telefon limiti saqlandi",sub:"IG+YT 20 daq, o'yin 1 soat",tag:"limit"},
+    {id:"uyqu",t:"22:00 da uxlash",sub:"Telefon yopiladi",time:"22:00"},
+  ]},
+];
+
+const MOTIVATIONS=[
+  "Kichik qadamlar katta o'zgarishlarga olib keladi 💪",
+  "Bugungi mehnating — ertangi g'alaba 🌟",
+  "Sabr — eng kuchli quroldir 🛡️",
+  "Allah mehnat qilganni sevadi 🤲",
+  "Har kun oldingidan yaxshiroq bo'l 🔥",
+  "Davom et — sen qila olasan! 🚀",
+];
+
+const WORKOUTS=[
+  {day:"Dushanba",focus:"Ko'krak + Qo'l 💥",ex:["Push-up — 4×15","Diamond push-up — 3×10","Triceps dips (stulda) — 3×12","Plank — 3×45 sek"]},
+  {day:"Seshanba",focus:"Orqa + Oyoq 🦵",ex:["Squats — 4×20","Lunges — 3×12","Superman — 3×15","Calf raises — 3×20"]},
+  {day:"Chorshanba",focus:"Ko'krak + Qo'l 💥",ex:["Push-up — 4×15","Wide push-up — 3×12","Triceps dips — 3×12","Plank — 3×45 sek"]},
+  {day:"Payshanba",focus:"Orqa + Oyoq 🦵",ex:["Squats — 4×20","Jump squats — 3×12","Lunges — 3×12","Glute bridge — 3×15"]},
+  {day:"Juma",focus:"Ko'krak + Qorin 🔥",ex:["Push-up — 4×15","Pike push-up — 3×10","Crunches — 3×20","Leg raises — 3×15"]},
+  {day:"Shanba",focus:"To'liq tana 💪",ex:["Burpees — 3×10","Squats — 3×20","Push-up — 3×15","Plank — 3×60 sek"]},
+  {day:"Yakshanba",focus:"Dam olish 🧘",ex:["30 daqiqa yurish","Cho'zilish (stretching)","Dam oling va tiklaning"]},
+];
+
+const todayKey=" kt_"+new Date().toLocaleDateString('en-CA');
+let state={};
+let metaKey="kt_meta";
+let meta={streak:0,lastDay:null,lastComplete:null};
+
+function loadState(){
+  try{
+    const raw=localStorage.getItem(todayKey);
+    state=raw?JSON.parse(raw):{};
+    const m=localStorage.getItem(metaKey);
+    if(m)meta=JSON.parse(m);
+  }catch(e){state={}}
+}
+function saveState(){
+  try{
+    localStorage.setItem(todayKey,JSON.stringify(state));
+    localStorage.setItem(metaKey,JSON.stringify(meta));
+  }catch(e){}
+}
+
+function totalCount(){let n=0;TASKS.forEach(c=>n+=c.items.length);return n}
+function doneCount(){return Object.values(state).filter(Boolean).length}
+
+function updateStreak(){
+  const total=totalCount(),done=doneCount();
+  const today=new Date().toLocaleDateString('en-CA');
+  if(done>=Math.ceil(total*0.7)){
+    if(meta.lastComplete!==today){
+      const y=new Date(Date.now()-86400000).toLocaleDateString('en-CA');
+      meta.streak=(meta.lastComplete===y)?meta.streak+1:1;
+      meta.lastComplete=today;
+    }
+  }else{
+    if(meta.lastComplete===today){
+      const y=new Date(Date.now()-86400000).toLocaleDateString('en-CA');
+      meta.streak=(meta.lastComplete===y)?meta.streak:Math.max(0,meta.streak-0);
+    }
+  }
+}
+
+function render(){
+  const list=document.getElementById('todayList');
+  list.innerHTML='';
+  TASKS.forEach(cat=>{
+    const ct=document.createElement('div');
+    ct.className='cat-title';ct.textContent=cat.cat;
+    list.appendChild(ct);
+    cat.items.forEach(it=>{
+      const done=!!state[it.id];
+      const el=document.createElement('div');
+      el.className='item'+(done?' done':'');
+      el.innerHTML=`
+        <div class="check"><svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"/></svg></div>
+        <div class="item-body">
+          <div class="item-text">${it.t}</div>
+          ${it.time?`<div class="item-time">⏰ ${it.time}</div>`:''}
+          ${it.sub?`<div class="item-sub">${it.sub}</div>`:''}
+        </div>
+        ${it.tag?`<div class="item-tag">${it.tag}</div>`:''}`;
+      el.onclick=()=>{state[it.id]=!state[it.id];updateStreak();saveState();render()};
+      list.appendChild(el);
+    });
+  });
+  // ring
+  const total=totalCount(),done=doneCount();
+  const pct=total?Math.round(done/total*100):0;
+  const c=2*Math.PI*68;
+  document.getElementById('ringFg').style.strokeDasharray=c;
+  document.getElementById('ringFg').style.strokeDashoffset=c-(c*pct/100);
+  document.getElementById('ringPct').textContent=pct+'%';
+  document.getElementById('ringLabel').textContent=done+' / '+total+' bajarildi';
+  document.getElementById('streakNum').textContent=meta.streak||0;
+  // motivation
+  const m=document.getElementById('motivation');
+  if(pct===100){m.textContent="🎉 Mukammal kun! Barakalla, davom et!";}
+  else{m.textContent=MOTIVATIONS[new Date().getDate()%MOTIVATIONS.length];}
+}
+
+function renderWorkout(idx){
+  const c=document.getElementById('workoutContainer');
+  c.innerHTML='';
+  const w=WORKOUTS[idx];
+  const card=document.createElement('div');
+  card.className='info-card';
+  card.innerHTML=`<h3>${w.day} — ${w.focus}</h3><ul>${w.ex.map(e=>`<li>${e}</li>`).join('')}</ul>`;
+  c.appendChild(card);
+  const tip=document.createElement('div');
+  tip.className='info-card';
+  tip.innerHTML=`<h3>💡 Maslahat</h3><p>Har mashqdan keyin 60 sek dam. Sekin boshlang, har hafta takrorni oshiring. Mashqdan keyin oqsil (tuxum, go'sht) yeng. Kachok ko'rinish uchun <strong>doimiylik</strong> eng muhim!</p>`;
+  c.appendChild(tip);
+}
+
+function resetDay(){
+  if(confirm("Bugungi belgilarni tozalaymizmi?")){
+    state={};saveState();render();
+  }
+}
+
+// tabs
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.tab).classList.add('active');
+  };
+});
+// workout day buttons
+document.querySelectorAll('.day-btn').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.day-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    renderWorkout(+b.dataset.w);
+  };
+});
+
+// init
+function init(){
+  const days=['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'];
+  const months=['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
+  const now=new Date();
+  document.getElementById('date').textContent=days[now.getDay()]+', '+now.getDate()+' '+months[now.getMonth()];
+  const h=now.getHours();
+  document.getElementById('greeting').textContent=h<12?"Xayrli tong ☀️":h<18?"Xayrli kun 🌤️":"Xayrli kech 🌙";
+  loadState();
+  render();
+  // default workout = today (mon=0)
+  let wd=now.getDay()-1; if(wd<0)wd=6;
+  document.querySelectorAll('.day-btn')[wd].classList.add('active');
+  renderWorkout(wd);
+}
+init();
+</script>
+</body>
+</html>
